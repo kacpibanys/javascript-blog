@@ -34,17 +34,17 @@ const optArticleSelector = '.post',
 function generateTitleLinks(){
 
   /* remove contents of titleList */
-  function clearMessages(){
-    document.getElementById('messages').innerHTML = '';
-  }
+  // function clearMessages(){
+  //   document.getElementById('messages').innerHTML = '';
+  // }
 
-  const titleList = querySelector(optTitleListSelector);
-  function clearMessages(){
-    titleList.innerHTML = '';
-  }
+  const titleList = document.querySelector(optTitleListSelector);
+  // function clearMessages(){
+  //   titleList.innerHTML = '';
+  // }
   /* for each article */
   let html = '';
-  const articles = querySelectorAll(optArticleSelector);
+  const articles = document.querySelectorAll(optArticleSelector);
   for(let article of articles){
 
     /* get the article id */
