@@ -1,4 +1,7 @@
 'use strict';
+const templates = {
+  articleLink: Handlebars.compile(document.querySelector('#template-article-link').innerHTML)
+}
 
 const ACTIVE_CLASS = 'active';
 
@@ -54,7 +57,8 @@ function generateTitleLinks(customSelector = ''){
     const articleTitle = article.querySelector(optTitleSelector).innerHTML;
 
     /* create HTML of the link */
-    const linkHTML = '<li><a href="#' + articleId + '"><span>' + articleTitle + '</span></a></li>';
+    const linkHTMLData = {id: articleId, title: articleTitle};
+    const linkHTML = templates.articleLink(linkHTMLData);
 
     /* insert link into titleList */
     html = html + linkHTML;
@@ -81,6 +85,7 @@ function calculateTagsParams(tags){
     console.log(tag + ' is used '+tags[tag]+' times');
     console.log(params);
   }
+  return params;
 }
 
 function calculateTagClass(count, params){
@@ -89,6 +94,7 @@ function calculateTagClass(count, params){
   const percentage  = normalizedCount / normalizedMax;
   const classNumber = optCloudClassPrefix + Math.floor( percentage * (optCloudClassCount - 1) - 1);
   console.log(classNumber);
+  return classNumber;
 }
 
 
@@ -143,7 +149,7 @@ function generateTags(){
   /* [NEW] START LOOP  for each tag in allTags: */
   for(let tag in allTags){
     /*[NEW] generate code of a link and add it to allTagsHTML */
-    allTagsHTML += '<li><a class="' + calculateTagClass(allTags[tag], tagsParams) + '" href="#tag-'+tag+'">'+tag+'</a></li>' + '(' + allTags[tag] + ')';
+    allTagsHTML += '<li><a class="' + calculateTagClass(allTags[tag], tagsParams) + '" href="#tag-'+tag+'">'+tag+'</a></li>';
   }
   /* [NEW] END LOOP: for each tag in allTags: */
   /* [NEW] add html from allTagsHTML to tagList */
@@ -198,16 +204,50 @@ function addClickListenersToTags(){
 
 addClickListenersToTags();
 
+function calculateAuthorsParams(authors){
+  const params = {max: 0, min: 999999};
+  // params.max = 0;
+  // params.min = 999999;
+  for(let author in authors){
+
+    params.max = Math.max(authors[author], params.max);
+    params.min = Math.min(authors[author], params.min);
+    console.log(author + ' is used '+authors[author]+' times');
+    console.log(params);
+  }
+  return params;
+}
+
 function generateAuthors(){
+  let allAuthors = {};
   const articles = document.querySelectorAll(optArticleSelector);
   for(let article of articles){
     const authorsWrapper = article.querySelectorAll(optAuthorSelector);
     let html = '';
     const articleAuthors = article.getAttribute('post-author');
     html = html + articleAuthors;
+    console.log(authorsWrapper);
+    for(let author of articleAuthors){
+      const linkHTML = '<p class="post-author">'+author+'</p>';
+      /* eslint-disable */
+      if(!allAuthors.hasOwnProperty(author)){
+        allAuthors[author] = 1;
+      } else {
+        allAuthors[author]++;
+      }
+      /* eslint-enable */
+      html = html + linkHTML;
+    }
     authorsWrapper.innerHTML = html;
+  }
+  const authorsList = document.querySelector('.post-author');
+  const authorsParams = calculateAuthorsParams(allAuthors);
+  let allAuthorsHTML = '';
+  for(let author in allAuthors){
+    allAuthorsHTML += '<p class="post-author">'+author+' ('+ calculateAuthorsParams(allAuthors[author], authorsParams) + ')</p>';
 
   }
+  authorsList.innerHTML = allAuthorsHTML;
 }
 
 generateAuthors();

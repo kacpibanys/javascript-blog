@@ -87,6 +87,37 @@ body {
   }
 }
 
+.list {
+  &.tags {
+    display: inline;
+
+    .tag-size-1{
+      font-size: x-small;
+      color: black;
+    }
+
+    .tag-size-2{
+      font-size: small;
+      color: blue;
+    }
+
+    .tag-size-3{
+      font-size: medium;
+      color: violet;
+    }
+
+    .tag-size-4{
+      font-size: large;
+      color: red;
+    }
+
+    .tag-size-5{
+      font-size: x-large;
+      color: royalblue;
+    }
+  }
+}
+
 .list-horizontal {
   li {
     display: inline-block;
