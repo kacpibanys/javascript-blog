@@ -1,8 +1,9 @@
 'use strict';
+/* eslint disable */
 const templates = {
   articleLink: Handlebars.compile(document.querySelector('#template-article-link').innerHTML)
-}
-
+};
+/* eslint enable */
 const ACTIVE_CLASS = 'active';
 
 function titleClickHandler(event){
@@ -221,35 +222,30 @@ function calculateAuthorsParams(authors){
 function generateAuthors(){
   let allAuthors = {};
   const articles = document.querySelectorAll(optArticleSelector);
+  let authorsHtml = '';
+
   for(let article of articles){
-    const authorsWrapper = article.querySelectorAll(optAuthorSelector);
-    let html = '';
-    const articleAuthors = article.getAttribute('post-author');
-    html = html + articleAuthors;
-    console.log(authorsWrapper);
-    for(let author of articleAuthors){
-      const linkHTML = '<p class="post-author">'+author+'</p>';
-      /* eslint-disable */
-      if(!allAuthors.hasOwnProperty(author)){
-        allAuthors[author] = 1;
-      } else {
-        allAuthors[author]++;
-      }
-      /* eslint-enable */
-      html = html + linkHTML;
-    }
-    authorsWrapper.innerHTML = html;
-  }
-  const authorsList = document.querySelector('.post-author');
-  const authorsParams = calculateAuthorsParams(allAuthors);
-  let allAuthorsHTML = '';
-  for(let author in allAuthors){
-    allAuthorsHTML += '<p class="post-author">'+author+' ('+ calculateAuthorsParams(allAuthors[author], authorsParams) + ')</p>';
+    const authorsWrapper = article.querySelector(optAuthorSelector);
+    const authorName = authorsWrapper.innerHTML.replace('by ', '');
 
+    /* eslint-disable */
+    if (!allAuthors.hasOwnProperty(authorName)){
+          allAuthors[authorName] = 1;
+        } else {
+          allAuthors[authorName]++;
+        }
+   /* eslint-enable */
   }
-  authorsList.innerHTML = allAuthorsHTML;
+
+  const authorsList = document.querySelector('.list.authors');
+  for(let authorKey in allAuthors){
+    authorsHtml += `<li><a href="#${authorKey}"> ${authorKey} (${allAuthors[authorKey]})</a> <li>`;
+  }
+
+  console.log('+++++', Object.entries(allAuthors))
+
+  authorsList.innerHTML = authorsHtml;
 }
-
 generateAuthors();
 
 function addClickListenersToAuthors(){
